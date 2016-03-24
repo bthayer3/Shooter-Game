@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
 
@@ -44,7 +45,10 @@ public class PlayerController : MonoBehaviour {
 	private float nextFire1;
 	private float nextFire2;
 	private float nextFire3;
+	private List<GameObject> foundWeapons;
 
+	private Color color;
+	public Text learnedCrouch;
 
 	void Start ()
 	{		
@@ -67,6 +71,11 @@ public class PlayerController : MonoBehaviour {
 		UMP45.SetActive (false);
 		M4A1.SetActive (false);
 		grabWeapon.text = "";
+		learnedCrouch.text = "";
+
+		foundWeapons = new List<GameObject>();
+
+		//color = Color.white;
 	
 	}
 
@@ -96,18 +105,82 @@ public class PlayerController : MonoBehaviour {
 			Turn ();
 			Move ();
 
-			float dist1 = Vector3.Distance (groundAk.transform.position, transform.position);
-			float dist2 = Vector3.Distance (groundUmp.transform.position, transform.position);
-			float dist3 = Vector3.Distance (groundM4.transform.position, transform.position);
+			//float dist1 = Vector3.Distance (groundAk.transform.position, transform.position);
+			//float dist2 = Vector3.Distance (groundUmp.transform.position, transform.position);
+			//float dist3 = Vector3.Distance (groundM4.transform.position, transform.position);
 
-			if ((dist1 < 1) || (dist2 < 1) || (dist3 < 1)) {
-				print ("A gun is in range to pickup");
-				grabWeapon.text = "Press 'G' to grab weapon";
+			//print ("the count of weapons found is " + foundWeapons.Count);
+//			if (!AK47.activeSelf) {
+//				print ("the ak47 weapon has not been grabbed yet");
+//			} else {
+//				print ("the weapon has been picked up");
+//			}
+
+			if (foundWeapons.Count >= 1) {
+				hasGun = true;
+				learnedCrouch.text = "You have learned crouch, press left control to crouch";
+				//Fade.use.Alpha(learnedCrouch, 1.0, 0.0, 3.0);
+//				while (learnedCrouch.material.color.a > 0){
+//					learnedCrouch.material.color.a -= 0.1F * Time.deltaTime * 2;
+//					yield return 0;
+//				}
+
 			}
-			else{
-				print("A gun is not in range");
-				grabWeapon.text = "";
+
+			if (!AK47.activeSelf) {
+				float dist1 = Vector3.Distance (groundAk.transform.position, transform.position);
+				if (dist1 < 1) {
+					grabWeapon.text = "Press 'G' to grab weapon";
+					if (Input.GetKeyUp (KeyCode.G)) {
+						anim.Play ("Grabgun", -1, 0f);
+						StartCoroutine (DelayforGrab (0.6f, 1));
+						foundWeapons.Add (AK47);
+						//hasweapon = true;
+					}
+				} else {
+					grabWeapon.text = "";
+				}
 			}
+
+			if (!UMP45.activeSelf) {
+				float dist2 = Vector3.Distance (groundUmp.transform.position, transform.position);
+				if (dist2 < 1) {
+					grabWeapon.text = "Press 'G' to grab weapon";
+					if (Input.GetKeyUp (KeyCode.G)) {
+						anim.Play ("Grabgun", -1, 0f);
+						StartCoroutine (DelayforGrab (0.6f, 2));
+						foundWeapons.Add (UMP45);
+						//hasweapon = true;
+					}
+				} else {
+					grabWeapon.text = "";
+				}
+			}
+
+			if (!M4A1.activeSelf) {
+				float dist3 = Vector3.Distance (groundM4.transform.position, transform.position);
+				if (dist3 < 1) {
+					grabWeapon.text = "Press 'G' to grab weapon";
+					if (Input.GetKeyUp (KeyCode.G)) {
+						anim.Play ("Grabgun", -1, 0f);
+						StartCoroutine (DelayforGrab (0.6f, 3));
+						foundWeapons.Add (M4A1);
+						//hasweapon = true;
+					}
+				} else {
+					grabWeapon.text = "";
+				}
+			}
+
+
+//			if ((dist1 < 1) || (dist2 < 1) || (dist3 < 1)) {
+//				print ("A gun is in range to pickup");
+//				grabWeapon.text = "Press 'G' to grab weapon";
+//			}
+//			else{
+//				print("A gun is not in range");
+//				grabWeapon.text = "";
+//			}
 					
 
 
@@ -248,6 +321,25 @@ public class PlayerController : MonoBehaviour {
 		anim.SetLayerWeight (1, 0);
 	}
 
+	IEnumerator DelayforGrab(float delay, int gunNum)
+	{
+		yield return new WaitForSeconds(delay);
+
+		if (gunNum == 1) {
+			AK47.SetActive (true);
+			groundAk.SetActive (false);
+		}
+
+		if (gunNum == 2) {
+			UMP45.SetActive (true);
+			groundUmp.SetActive (false);
+		}
+
+		if (gunNum == 3) {
+			M4A1.SetActive (true);
+			groundM4.SetActive (false);
+		}
+	}
 
 	/// <summary>
 	/// Determines the movement speed based off what the player wants to do.
@@ -393,4 +485,12 @@ public class PlayerController : MonoBehaviour {
 		playerRigidbody.velocity = moveDirection * 40;                   //Move the player based off move direction
 	}	
 
+//	void Fade(){
+//
+//		while (learnedCrouch.material.color.a > 0){
+//			learnedCrouch.material.color.a -= 0.1F * Time.deltaTime * 2;
+//			yield return 0;
+//		}
+//		//Destroy (learnedCrouch);
+//	}
 }
