@@ -28,7 +28,9 @@ public class PlayerController : MonoBehaviour {
 	public GameObject groundAk;
 	public GameObject groundUmp;
 	public GameObject groundM4;
-	public Text grabWeapon;
+	public Text grabWeapon1;
+	public Text grabWeapon2;
+	public Text grabWeapon3;
 
 	private int currentWeapon;
 	private int movementSpeed;
@@ -64,13 +66,19 @@ public class PlayerController : MonoBehaviour {
 		hasGun = false;
 
 		playerHealth = 100;
-		currentWeapon = 1;
+		currentWeapon = 0;
 		turnSpeed = 300;
 
 		AK47.SetActive(false);
 		UMP45.SetActive (false);
 		M4A1.SetActive (false);
-		grabWeapon.text = "";
+		grabWeapon1.text = "";
+		grabWeapon2.text = "";
+		grabWeapon3.text = "";
+//		grabWeapon1.enabled = false;
+//		grabWeapon2.enabled = false;
+//		grabWeapon3.enabled = false;
+		//grabWeapon.enabled = false;
 		learnedCrouch.text = "";
 
 		foundWeapons = new List<GameObject>();
@@ -118,7 +126,11 @@ public class PlayerController : MonoBehaviour {
 
 			if (foundWeapons.Count >= 1) {
 				hasGun = true;
-				learnedCrouch.text = "You have learned crouch, press left control to crouch";
+				//learnedCrouch.text = "You have learned crouch, press left control to crouch";
+				//if(foundWeapons [currentWeapon].name == "Ak-47"){
+				//	print ("first weapon is ak");
+				//}
+				//print (foundWeapons [0].name);
 				//Fade.use.Alpha(learnedCrouch, 1.0, 0.0, 3.0);
 //				while (learnedCrouch.material.color.a > 0){
 //					learnedCrouch.material.color.a -= 0.1F * Time.deltaTime * 2;
@@ -126,59 +138,80 @@ public class PlayerController : MonoBehaviour {
 //				}
 
 			}
+			float dist1 = Vector3.Distance (groundAk.transform.position, transform.position);
+			float dist2 = Vector3.Distance (groundUmp.transform.position, transform.position);
+			float dist3 = Vector3.Distance (groundM4.transform.position, transform.position);
 
 			if (!AK47.activeSelf) {
-				float dist1 = Vector3.Distance (groundAk.transform.position, transform.position);
+				
 				if (dist1 < 1) {
-					grabWeapon.text = "Press 'G' to grab weapon";
+					//grabWeapon1.enabled = true;
+					grabWeapon1.text = "Press 'G' to grab AK-47";
+					//print ("it got here");
 					if (Input.GetKeyUp (KeyCode.G)) {
 						anim.Play ("Grabgun", -1, 0f);
 						StartCoroutine (DelayforGrab (0.6f, 1));
 						foundWeapons.Add (AK47);
 						//hasweapon = true;
+						//grabWeapon1.enabled = false;
+						Destroy(grabWeapon1);
+						//grabWeapon1.text = "";
 					}
 				} else {
-					grabWeapon.text = "";
+					grabWeapon1.text = "";
+					//grabWeapon1.enabled = false;
 				}
 			}
 
 			if (!UMP45.activeSelf) {
-				float dist2 = Vector3.Distance (groundUmp.transform.position, transform.position);
+				
 				if (dist2 < 1) {
-					grabWeapon.text = "Press 'G' to grab weapon";
+					//grabWeapon2.enabled = true;
+					grabWeapon2.text = "Press 'G' to grab UMP-45";
+					//print ("it got here 2");
 					if (Input.GetKeyUp (KeyCode.G)) {
 						anim.Play ("Grabgun", -1, 0f);
 						StartCoroutine (DelayforGrab (0.6f, 2));
 						foundWeapons.Add (UMP45);
 						//hasweapon = true;
+						//grabWeapon2.enabled = false;
+						//grabWeapon2.text = "";
+						Destroy(grabWeapon2);
 					}
 				} else {
-					grabWeapon.text = "";
+					grabWeapon2.text = "";
+					//grabWeapon2.enabled = false;
 				}
 			}
 
 			if (!M4A1.activeSelf) {
-				float dist3 = Vector3.Distance (groundM4.transform.position, transform.position);
+				
 				if (dist3 < 1) {
-					grabWeapon.text = "Press 'G' to grab weapon";
+					//grabWeapon3.enabled = true;
+					grabWeapon3.text = "Press 'G' to grab M4A1";
+					//print ("it got here 3");
 					if (Input.GetKeyUp (KeyCode.G)) {
 						anim.Play ("Grabgun", -1, 0f);
 						StartCoroutine (DelayforGrab (0.6f, 3));
 						foundWeapons.Add (M4A1);
 						//hasweapon = true;
+						//grabWeapon3.enabled = false;
+						//grabWeapon3.text = "";
+						Destroy(grabWeapon3);
 					}
 				} else {
-					grabWeapon.text = "";
+					grabWeapon3.text = "";
+					//grabWeapon3.enabled = false;
 				}
 			}
 
 
 //			if ((dist1 < 1) || (dist2 < 1) || (dist3 < 1)) {
-//				print ("A gun is in range to pickup");
+//				//print ("A gun is in range to pickup");
 //				grabWeapon.text = "Press 'G' to grab weapon";
 //			}
 //			else{
-//				print("A gun is not in range");
+//				//print("A gun is not in range");
 //				grabWeapon.text = "";
 //			}
 					
@@ -218,13 +251,15 @@ public class PlayerController : MonoBehaviour {
 
 
 				//If user wants to switch weapon
-				if (Input.GetKeyUp (KeyCode.Q)) {
-					anim.SetLayerWeight (2, 0);
-					anim.SetLayerWeight (1, 1);
-					anim.Play ("grab_rifle_from_behind_shoulder", 1, 0f);
+				if (foundWeapons.Count > 1) {
+					if (Input.GetKeyUp (KeyCode.Q)) {
+						anim.SetLayerWeight (2, 0);
+						anim.SetLayerWeight (1, 1);
+						anim.Play ("grab_rifle_from_behind_shoulder", 1, 0f);
 
-					StartCoroutine (WaitToChange (0.24f));
-					StartCoroutine (DelayforAnimation (1.61f));
+						StartCoroutine (WaitToChange (0.24f));
+						StartCoroutine (DelayforAnimation (1.61f));
+					}
 				}
 
 				//If user wants to reload
@@ -239,7 +274,7 @@ public class PlayerController : MonoBehaviour {
 
 				} 
 				if (Reloading == false && switchingWeapon == false) {
-					if (currentWeapon == 1) {
+					if (foundWeapons [currentWeapon].name == "Ak-47") {
 						if (Input.GetMouseButton (0)) {         //Automatic cause of holding down
 							//Get the inherited shoot method from the script and call it
 							ak47Weapon Action = AK47.GetComponent<ak47Weapon> ();
@@ -247,7 +282,7 @@ public class PlayerController : MonoBehaviour {
 						}
 					}
 
-					if (currentWeapon == 2) {
+					if (foundWeapons [currentWeapon].name == "UMP-45") {
 
 						if (Input.GetMouseButton (0)) {         //Automatic cause of holding down
 							//Get the inherited shoot method from the script and call it
@@ -256,7 +291,7 @@ public class PlayerController : MonoBehaviour {
 						}		
 					}
 
-					if (currentWeapon == 3) {
+					if (foundWeapons [currentWeapon].name == "M4A1 Sopmod") {
 						if (Input.GetMouseButtonUp (0)) {       //Use ButtonUp makes it semi-automatic
 							//Get the inherited shoot method from the script and call it
 							m4a1Weapon Action3 = M4A1.GetComponent<m4a1Weapon> ();
@@ -359,17 +394,17 @@ public class PlayerController : MonoBehaviour {
 	/// Reloads the current gun based off the inherited reload method.
 	/// </summary>
 	void ReloadCurrentGun(){
-		if (currentWeapon == 1) {
+		if (foundWeapons [currentWeapon].name == "Ak-47") {
 			ak47Weapon Action1 = AK47.GetComponent<ak47Weapon> (); 
 			Action1.Reload ();
 		}
 
-		if (currentWeapon == 2) {
+		if (foundWeapons [currentWeapon].name == "UMP-45") {
 			ump45Weapon Action2 = UMP45.GetComponent<ump45Weapon> ();
 			Action2.Reload ();
 		}
 
-		if (currentWeapon == 3) {
+		if (foundWeapons [currentWeapon].name == "M4A1 Sopmod") {
 			m4a1Weapon Action3 = M4A1.GetComponent<m4a1Weapon> ();
 			Action3.Reload ();
 		}
@@ -379,19 +414,19 @@ public class PlayerController : MonoBehaviour {
 	/// Extracts ammo and reloading information of each individual weapon from their script
 	/// </summary>
 	void GetCurrentWeaponInfo(){
-		if (currentWeapon == 1) {
+		if (foundWeapons [currentWeapon].name == "Ak-47") {
 			ammoinClip = AK47.GetComponent<ak47Weapon> ().Clipsize;
 			bulletsRemaining = AK47.GetComponent<ak47Weapon> ().MaxgunAmmo;
 			couldReload = AK47.GetComponent<ak47Weapon> ().Canreload;
 		}
 
-		if (currentWeapon == 2) {
+		if (foundWeapons [currentWeapon].name == "UMP-45") {
 			ammoinClip = UMP45.GetComponent<ump45Weapon> ().Clipsize;
 			bulletsRemaining = UMP45.GetComponent<ump45Weapon> ().MaxgunAmmo;
 			couldReload = UMP45.GetComponent<ump45Weapon> ().Canreload;
 		}
 
-		if (currentWeapon == 3) {
+		if (foundWeapons [currentWeapon].name == "M4A1 Sopmod") {
 			ammoinClip = M4A1.GetComponent<m4a1Weapon> ().Clipsize;
 			bulletsRemaining = M4A1.GetComponent<m4a1Weapon> ().MaxgunAmmo;
 			couldReload = M4A1.GetComponent<m4a1Weapon> ().Canreload;
@@ -439,28 +474,33 @@ public class PlayerController : MonoBehaviour {
 	/// Changes the current weapon of the player to the next weapon
 	/// </summary>
 	void ChangeWeapon(){
+		foundWeapons [currentWeapon].SetActive (false);
 		currentWeapon++;
-		if (currentWeapon > 3) {     //reset counter back to beginning
-			currentWeapon = 1;
+		if (currentWeapon >= foundWeapons.Count) {
+			currentWeapon = 0;
 		}
-
-		if (currentWeapon == 1) {
-			AK47.SetActive(true);    //show the first weapon
-			UMP45.SetActive (false);
-			M4A1.SetActive (false);
-		}
-
-		if (currentWeapon == 2) {
-			AK47.SetActive(false);
-			UMP45.SetActive (true);  //show the second weapon
-			M4A1.SetActive (false);   
-		}
-
-		if (currentWeapon == 3) {
-			AK47.SetActive(false);
-			UMP45.SetActive (false);
-			M4A1.SetActive (true);   //show the last weapon
-		}
+		foundWeapons [currentWeapon].SetActive (true);
+//		if (currentWeapon > 3) {     //reset counter back to beginning
+//			currentWeapon = 1;
+//		}
+//
+//		if (currentWeapon == 1) {
+//			AK47.SetActive(true);    //show the first weapon
+//			UMP45.SetActive (false);
+//			M4A1.SetActive (false);
+//		}
+//
+//		if (currentWeapon == 2) {
+//			AK47.SetActive(false);
+//			UMP45.SetActive (true);  //show the second weapon
+//			M4A1.SetActive (false);   
+//		}
+//
+//		if (currentWeapon == 3) {
+//			AK47.SetActive(false);
+//			UMP45.SetActive (false);
+//			M4A1.SetActive (true);   //show the last weapon
+//		}
 	}
 
 

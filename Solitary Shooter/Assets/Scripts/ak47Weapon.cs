@@ -6,8 +6,8 @@ public class ak47Weapon : Weapon {
 
 	// Use this for changing gun default values
 	void Start () {
-		maxGunAmmo = 20;
-		clipSize = 50;
+		maxGunAmmo = 40;
+		clipSize = 10;
 		fireRate = 0.8f;
 	}
 	

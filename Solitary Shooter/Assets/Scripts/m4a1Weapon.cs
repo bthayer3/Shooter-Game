@@ -7,7 +7,7 @@ public class m4a1Weapon : Weapon {
 
 	// Use this for changing gun default values
 	void Start () {
-		maxGunAmmo = 40;
+		maxGunAmmo = 25;
 		clipSize = 5;
 		//stockHitDamage = 30;
 		fireRate = 1.0f;
