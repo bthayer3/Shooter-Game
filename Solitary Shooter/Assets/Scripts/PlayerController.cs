@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour {
 	private bool Death;
 	private bool couldReload;
 	private bool hasGun;
+	public bool learnedCrouch;
 
 	public CapsuleCollider col1;
 	public CapsuleCollider col2;
@@ -49,8 +50,9 @@ public class PlayerController : MonoBehaviour {
 	private float nextFire3;
 	private List<GameObject> foundWeapons;
 
-	private Color color;
-	public Text learnedCrouch;
+//	private float duaration;
+//	private Color color;
+//	public Text learnedCrouch;
 
 	void Start ()
 	{		
@@ -64,6 +66,7 @@ public class PlayerController : MonoBehaviour {
 		col2.enabled = false;
 		couldReload = false;
 		hasGun = false;
+		learnedCrouch = false;
 
 		playerHealth = 100;
 		currentWeapon = 0;
@@ -79,7 +82,7 @@ public class PlayerController : MonoBehaviour {
 //		grabWeapon2.enabled = false;
 //		grabWeapon3.enabled = false;
 		//grabWeapon.enabled = false;
-		learnedCrouch.text = "";
+		//learnedCrouch.text = "";
 
 		foundWeapons = new List<GameObject>();
 
@@ -126,6 +129,8 @@ public class PlayerController : MonoBehaviour {
 
 			if (foundWeapons.Count >= 1) {
 				hasGun = true;
+				StartCoroutine(UpdateCrouchAbility(2.0f));
+				//learnedCrouch = true;
 				//learnedCrouch.text = "You have learned crouch, press left control to crouch";
 				//if(foundWeapons [currentWeapon].name == "Ak-47"){
 				//	print ("first weapon is ak");
@@ -343,6 +348,12 @@ public class PlayerController : MonoBehaviour {
 
 	}
 
+	IEnumerator UpdateCrouchAbility(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		learnedCrouch = true;
+
+	}
 
 	/// <summary>
 	/// Lets animation finish and resets layer weights
